@@ -1,0 +1,4 @@
+.venv
+qr/*
+*.pdf
+*.docx
