@@ -10,8 +10,8 @@ class DataSaver:
         self.cursor.execute(query)
     
     def insert_data(self, table_name, data):
-        placeholders = ', '.join(['?' for _ in data])
-        query = f"INSERT INTO {table_name} VALUES ({placeholders})"
+        #placeholders = ', '.join(['?' for _ in data])
+        query = f"INSERT INTO {table_name} VALUES (:name, :url, :prop)"
         self.cursor.execute(query, data)
         self.conn.commit()
     

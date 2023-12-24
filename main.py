@@ -4,7 +4,7 @@ import aiohttp
 import qrcode
 # from docx import Document
 # from docx.shared import Pt
-#import json
+import json
 
 async def fetch(url:str) -> str:
     """
@@ -118,6 +118,7 @@ async def save_data(data):
     data_saver = DataSaver('data.db')
     data_saver.create_table('data', ['name TEXT', 'url TEXT', 'prop TEXT'])
     for item in data:
+        print(item)
         data_saver.insert_data('data', item)
     data_saver.close_connection()
 
@@ -143,7 +144,7 @@ async def main():
             #doc.add_paragraph(k)
             #doc.add_picture('qr/'+name+'.png', width=Pt(100))
             # FIXME
-            await save_data({'name':key, 'url':product_links[key], 'prop':properties})
+            await save_data([{'name':key, 'url':product_links[key], 'prop':json.dumps(properties)}])
         counter = 1
     #doc.save('catalog.docx')
 
