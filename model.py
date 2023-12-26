@@ -1,8 +1,8 @@
 import sqlite3
 
 class DataSaver:
-    def __init__(self, db_name):
-        self.conn = sqlite3.connect(db_name)
+    def __init__(self):
+        self.conn = sqlite3.connect('data.db')
         self.cursor = self.conn.cursor()
     
     def create_table(self, table_name, columns):
@@ -14,6 +14,11 @@ class DataSaver:
         query = f"INSERT INTO {table_name} VALUES (:name, :url, :prop)"
         self.cursor.execute(query, data)
         self.conn.commit()
+
+    def get_urls(self):
+        query = "SELECT url FROM 'data'"
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
     
     def close_connection(self):
         self.cursor.close()

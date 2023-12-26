@@ -2,3 +2,5 @@
 qr/*
 *.pdf
 *.docx
+*.db
+test.py

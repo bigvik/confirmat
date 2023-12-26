@@ -115,7 +115,7 @@ async def save_data(data):
         None
     """
     from model import DataSaver
-    data_saver = DataSaver('data.db')
+    data_saver = DataSaver()
     data_saver.create_table('data', ['name TEXT', 'url TEXT', 'prop TEXT'])
     for item in data:
         print(item)
