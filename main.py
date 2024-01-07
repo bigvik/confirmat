@@ -5,6 +5,7 @@ import qrcode
 # from docx import Document
 # from docx.shared import Pt
 import json
+from model import DataSaver
 
 async def fetch(url:str) -> str:
     """
@@ -88,6 +89,53 @@ async def parse_properties(link:str) -> dict:
         prop.update({key: value})
     return prop
 
+async def parse_one(url:str) -> dict:
+    """
+    Parses the properties of a given link and returns a dictionary containing the key-value pairs.
+
+    Parameters:
+    link (str): The link to fetch and parse the properties from.
+
+    Returns:
+    dict: A dictionary containing the key-value pairs of the parsed properties.
+    """
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            html = await response.text()
+            parser = HTMLParser(html)
+            page = {}
+            # Name
+            #name = parser.css('.bd-card-head__title')[0].text()
+            page.update({'name': 'name'})
+            # Price
+            price = parser.css('li.bd-price__current')[1].text(strip=True)[:-4].replace(' ', '')
+            page.update({'price': price})
+            # Images
+            imgs = []
+            for img in parser.css('.bd-card-slider__img'):
+                imgs.append(img.attributes['src'])
+            page.update({'imgs': ', '.join(imgs)})
+            # Properties
+            prop = {}
+            for li in parser.css('.bd-product-list__item'):
+                key = li.css(".bd-product-list__prop")[0].text(strip=True)
+                value = li.css(".bd-product-list__value")[0].text(strip=True)
+                prop.update({key: value})
+            page.update({'prop': json.dumps(prop)})
+            # Description
+            p = ''
+            node = parser.css('.bd-card-tabs__body')[1]
+            for cnode in node.iter():
+                p += cnode.html
+            #desc = parser.css('.bd-card-tabs__body')[1].text(strip=True)
+            page.update({'desc': p})
+            # Documents
+            docs = []
+            for doc in parser.css('.bd-download-files__item'):
+                docs.append(doc.attributes['href'])
+            page.update({'docs': ', '.join(docs)})
+            return page
+
 async def make_qr(text: str, name:str) -> None:
     """
     Generate a QR code image from a given text and save it with a specified name.
@@ -114,12 +162,21 @@ async def save_data(data):
     Returns:
         None
     """
-    from model import DataSaver
     data_saver = DataSaver()
-    data_saver.create_table('data', ['name TEXT', 'url TEXT', 'prop TEXT'])
+    data_saver.create_table('data',
+                            ['id INTEGER PRIMARY KEY',
+                             'url TEXT',
+                             'name TEXT',
+                             'price TEXT',
+                             'imgs TEXT',
+                             'prop TEXT',
+                             'desc TEXT',
+                             'docs TEXT'
+                             ])
     for item in data:
-        print(item)
+        #print(item)
         data_saver.insert_data('data', item)
+    print('Data saved successfully!')
     data_saver.close_connection()
 
 async def main():
@@ -134,17 +191,22 @@ async def main():
         product_links = await parse_links(sections)
         counter = 1
         length = len(product_links)
+        data = []
         for key in product_links:
-            properties = await parse_properties(product_links[key])
+            #properties = await parse_properties(product_links[key])
+            properties = await parse_one(product_links[key])
+            properties.update({'id': counter})
+            properties.update({'name': key})
+            properties.update({'url': product_links[key]})
             print(f'\t\tProcessing {counter}/{length} products', end='\r')
             counter += 1
-            print({'name':key, 'url':product_links[key], 'prop':properties})
+            #print({'name':key, 'url':product_links[key], 'prop':properties})
             #name = links[k].split('/')[-1:][0][:-5]
             #await make_qr(links[k], name)
             #doc.add_paragraph(k)
             #doc.add_picture('qr/'+name+'.png', width=Pt(100))
-            # FIXME
-            await save_data([{'name':key, 'url':product_links[key], 'prop':json.dumps(properties)}])
+            data.append(properties)
+        await save_data(data)
         counter = 1
     #doc.save('catalog.docx')
 
