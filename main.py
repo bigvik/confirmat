@@ -162,16 +162,11 @@ async def save_data(data):
     Returns:
         None
     """
-    data_saver = DataSaver()
-    data_saver.create_table('data',
+    data_saver = DataSaver('data.db')
+    data_saver.create_table('one',
                             ['id INTEGER PRIMARY KEY',
                              'url TEXT',
-                             'name TEXT',
-                             'price TEXT',
-                             'imgs TEXT',
-                             'prop TEXT',
-                             'desc TEXT',
-                             'docs TEXT'
+                             'name TEXT'
                              ])
     for item in data:
         #print(item)
@@ -193,11 +188,11 @@ async def main():
         length = len(product_links)
         data = []
         for key in product_links:
-            #properties = await parse_properties(product_links[key])
-            properties = await parse_one(product_links[key])
+            properties = await parse_properties(product_links[key])
+            #properties = await parse_one(product_links[key])
             properties.update({'id': counter})
-            properties.update({'name': key})
-            properties.update({'url': product_links[key]})
+            #properties.update({'name': key})
+            #properties.update({'url': product_links[key]})
             print(f'\t\tProcessing {counter}/{length} products', end='\r')
             counter += 1
             #print({'name':key, 'url':product_links[key], 'prop':properties})

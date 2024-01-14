@@ -1,6 +1,10 @@
 .venv
+qr
 qr/*
 *.pdf
 *.docx
 *.db
 test.py
+*.sql
+~
+~/*

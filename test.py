@@ -1,18 +1,30 @@
-#from model import DataSaver
-import sqlite3
+from model import DataSaver
+import asyncio
+from selectolax.parser import HTMLParser
+import aiohttp
 
-def main():
-    conn = sqlite3.connect('data.db')
-    cursor = conn.cursor()
+async def fetch(url:str) -> str:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
 
-    query = "SELECT url FROM 'data'"
-    cursor.execute(query)
-    urls = cursor.fetchall()
-    for url in urls:
-        print(url[0])
+def save_data(data):
+    data_saver = DataSaver('test.db')
+    data_saver.create_table('product_links', ['url TEXT'])
+    for item in data:
+        print(item)
+        data_saver.insert_links('product_links', tuple([item]))
+    print('Data saved successfully!')
+    data_saver.close_connection()
 
-    conn.close()
-
+async def main():
+    html = await fetch('https://www.boyard.biz/catalog/handles/rt009cp_1_000_500.html')
+    parser = HTMLParser(html)
+    imgs = []
+    for img in parser.css('.bd-card-slider__img'):
+        imgs.append(img.attributes['src'].split('/')[-1:][0])
+    print(imgs)
 
 if __name__ == "__main__":
-    main()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
