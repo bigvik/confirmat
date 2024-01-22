@@ -3,6 +3,7 @@ qr
 qr/*
 *.pdf
 *.docx
+*.xls
 *.db
 test.py
 *.sql
