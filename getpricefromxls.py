@@ -9,7 +9,7 @@ def addprice_to_product():
     cur.execute('SELECT art, name, opt, price FROM pricelist') 
     for row in cur:
         #curva.execute(f"SELECT name FROM product_data WHERE name LIKE '%{row[0]}%'")
-        curva.execute(f"UPDATE product_data SET cprice = '{row[3]}', art = '{row[0]}' WHERE name LIKE '%{row[0]}%'")
+        curva.execute(f"UPDATE product_data SET ours_price = '{row[3]}', art = '{row[0]}' WHERE name LIKE '%{row[0]}%'")
         db.commit()
         #for r in curva:
             #cur.execute(f"UPDATE product_data SET cprice = '{row[3]}' WHERE name = '{r[2]}'")
@@ -21,16 +21,19 @@ def addprice_to_product():
 def main():
     data = pd.read_excel('pricelist.xls', usecols=[0, 5, 13, 14], names=['art', 'name', 'opt','price'], skiprows=6)
     f = ['В', 'Арт', 'АРТ', 'Метиз Астана', 'МетизАстана', 'КонфАлм', 'Дима', 'МФ', 'NaN', 'B', 'АлК',
-         'Арт 1', 'Арт 2', 'Арт 3', 'Арт 1, 3', 'ФМС', 'Ал Конф', 'Б', 'Шоса', 'MS']
+         'Арт 1', 'Арт 2', 'Арт 3', 'Арт 1, 3', 'ФМС', 'Ал Конф', 'Б', 'Шоса', 'MS', 'Арт (брючница)',
+         'Арт (обувница)', 'Арт (для белья)', 'Арт (для брюк)', 'АМБ', 'Кур-Астана', 'А-MAРКА', 'МФ']
     data = data[~data['art'].isin(f)]
+    data['art'] = data['art'].apply(lambda x: str(x).strip())
 
     db = sqlite3.connect('confirmat.db')
-
-    data.to_sql('pricelist', db, if_exists='append', index=False)
-
+    data.to_sql('pricelist', db, if_exists='replace', index=False)
     db.close()
+
+    print('Done! Pricelist added to database')
+    addprice_to_product()
 
 
 if __name__ == "__main__":
-    addprice_to_product()
-    #main()
+    #addprice_to_product()
+    main()

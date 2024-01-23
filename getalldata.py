@@ -87,7 +87,9 @@ async def save_data(data:list):
                             ['id INTEGER PRIMARY KEY',
                              'url TEXT',
                              'name TEXT',
+                             'art TEXT',
                              'price TEXT',
+                             'ours_price TEXT',
                              'imgs TEXT',
                              'prop TEXT',
                              'desc TEXT',
@@ -143,6 +145,9 @@ async def main():
             
             page.update({'url': u[0]})
             page.update({'id': counter})
+
+            page.update({'art': ''})
+            page.update({'ours_price': '0'})
 
             result.append(page)
             counter += 1
