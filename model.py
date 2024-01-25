@@ -28,6 +28,11 @@ class DataSaver:
         query = "SELECT url FROM 'product_links'"
         self.cursor.execute(query)
         return self.cursor.fetchall()
+
+    def get_urls_product(self):
+        query = "SELECT url, name FROM 'product_data'"
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
     
     def close_connection(self):
         self.cursor.close()
