@@ -20,7 +20,7 @@ def main():
     counter = 1
     l = len(data)
     for d in data:
-        print(f'Processing {counter}/{l}', end='/r')
+        print(f'Processing {counter}/{l}', end='\r')
         name = d[0].split('/')[-1:][0].replace('*', '_')
         path = 'qr/'+name+'.png'
         doc.add_paragraph(d[1])
