@@ -33,6 +33,11 @@ class DataSaver:
         query = "SELECT url, name FROM 'product_data'"
         self.cursor.execute(query)
         return self.cursor.fetchall()
+    
+    def get_where(self, art):
+        query = f"SELECT url, art FROM 'product_data' WHERE art LIKE '%{art}%'"
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
 
     def get_imglinks(self):
         query = "SELECT imgs FROM 'product_data'"
