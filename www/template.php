@@ -55,6 +55,9 @@
                         <div class="fs-5 mb-5">
                             <span id="price"><?if($ours_price == 0){echo 'наличие и цену уточняйте у менеджеров';}else{echo $ours_price.' ₸';}?></span>
                         </div>
+                        <?
+                          if($linklist != ""){echo $linklist;}
+                        ?>
                         <p class="lead"><?=$des?></p>
                         
                     </div>
