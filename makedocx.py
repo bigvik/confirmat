@@ -54,7 +54,7 @@ def make_test():
     data_len = len(data)
     rows = math.ceil(data_len / 4)
     counter = 1
-    table = doc.add_table(rows=0, cols=4, style="Table Grid")
+    table = doc.add_table(rows=0, cols=4)
 
     for _ in range(rows):
         img_row = table.add_row()
@@ -78,7 +78,7 @@ def make_test():
             cap_row.cells[col].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     # save doc
-    doc.save('QRwithFilter3.docx')
+    doc.save('QRtable.docx')
     print('Done!')
 
 def main():
