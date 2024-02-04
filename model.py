@@ -29,6 +29,11 @@ class DataSaver:
         self.cursor.execute(query, data)
         self.conn.commit()
 
+    def get_all(self):
+        query = "SELECT * FROM 'product_data'"
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+
     def get_urls(self):
         query = "SELECT url FROM 'product_links'"
         self.cursor.execute(query)
