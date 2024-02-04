@@ -100,8 +100,14 @@ async def save_data(data:list):
     #print('Data saved successfully!')
     data_saver.close_connection()
 
+async def update_data(data:list):
+    data_saver = DataSaver('confirmat.db')
+    for item in data:
+        data_saver.update_info('product_data', item['url'], item['prop'], item['desc'])
+    data_saver.close_connection()
+
 async def main():
-    #urls = ['https://www.boyard.biz/catalog/handles/rt009cp_1_000_500.html', 'https://www.boyard.biz/catalog/handles/rz050_04w.html']
+    #urls = ['https://www.boyard.biz/catalog/handles/rt009cp_1_000_500.html', 'https://www.boyard.biz/catalog/handles/rs156bl_3_320.html']
     urls = await get_urls()
     result = []
     counter = 1
@@ -125,17 +131,24 @@ async def main():
             page.update({'imgs': ', '.join(imgs)})
             # Properties
             prop = {}
-            for li in parser.css('.bd-product-list__item'):
+            #for li in parser.css('.bd-product-list__item'):
+            for li in parser.css('li[data-tab-action="feature"] div ul li'):
                 key = li.css(".bd-product-list__prop")[0].text(strip=True)
                 value = li.css(".bd-product-list__value")[0].text(strip=True)
                 prop.update({key: value})
             page.update({'prop': json.dumps(prop, ensure_ascii=False)})
             # Description
             p = ''
-            node = parser.css('.bd-card-tabs__body')[1]
-            for cnode in node.iter():
-                p += cnode.html
-                #desc = parser.css('.bd-card-tabs__body')[1].text(strip=True)
+            try:
+                #node = parser.css('.bd-card-tabs__body')[1]
+                node = parser.css('li[data-tab-action="description"]')[0]
+                #p = node.html
+                for cnode in node.iter():
+                    p += cnode.html
+                    ##desc = parser.css('.bd-card-tabs__body')[1].text(strip=True)
+            except:
+                p = 'No description'
+                continue
             page.update({'desc': p})
             # Documents
             docs = []
@@ -151,10 +164,13 @@ async def main():
 
             result.append(page)
             counter += 1
-        except:
+        except Exception as e:
             print(f'Error!: {counter}/ {u[0]}')
+            print(e)
             continue
-    await save_data(result)
+    #await save_data(result)
+    await update_data(result)
+    #print(result)
 
 
 if __name__ == "__main__":

@@ -32,26 +32,33 @@ $query->fetch();
 // Закрытие запроса
 $query->close();
 // Закрытие соединения с базой данных
+$linklist = "";
 
+$filter = array('RT', 'RS', 'SU');
 
-if (str_contains($art, 'RT')){
+if (in_array(substr($art, 0, 2), $filter)){
     $query = $mysqli->prepare("SELECT * FROM product_data WHERE art LIKE ?");
-    $param = "%".explode('/', $art)[0]."%";
+    $param = explode('/', $art)[0]."%";
     $query->bind_param('s', $param);
     $query->execute();
     $result = $query->get_result();
 
     // Check if there are any rows returned
     if ($result->num_rows > 0) {
-        $linklist = "<div><p>Размеры: ";
+        $linklist = "<div>Размеры: ";
         while ($row = $result->fetch_assoc()) {
             // Process each row as needed
             $exp = explode("/", $row['art']);
             $key = array_key_last($exp);
-            $temp = '<a href="index.php?id='.$row['id'].'">'.$exp[$key].'  </a>';
+            if ($row['id'] == $id){
+                $temp = '<a class="badge bg-primary" href="index.php?id='.$row['id'].'">'.$exp[$key].'</a>  ';
+            }else{
+                $temp = '<a class="badge bg-light text-dark" href="index.php?id='.$row['id'].'">'.$exp[$key].'</a>  ';
+            }
+            
             $linklist .= $temp;
         }
-        $linklist .= "</p></div>";
+        $linklist .= "</div>";
     } else {
         $linklist = "";
     }

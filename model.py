@@ -18,6 +18,11 @@ class DataSaver:
         self.cursor.execute(query, data)
         self.conn.commit()
 
+    def update_info(self, table_name, url, prop, desc):
+        query = f"UPDATE {table_name} SET prop = '{prop}', desc = '{desc}' WHERE url = '{url}'"
+        self.cursor.execute(query)
+        self.conn.commit()
+
     def insert_links(self, table_name, data):
         query = f"INSERT INTO {table_name} VALUES (?)"
         print(data)
