@@ -11,21 +11,21 @@
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/custom.css" rel="stylesheet" />
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/custom.css" rel="stylesheet" />
     </head>
     <body>
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container justify-content-center px-4 px-lg-5">
-                <a class="navbar-brand" href="/"><img src="logo.jpg"/></a>
+                <a class="navbar-brand" href="/"><img src="../logo.jpg"/></a>
             </div>
         </nav>
 
         <!-- Product section-->
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
-                <div class="row gx-4 gx-lg-5 align-items-center">
+                <div class="row gx-4 gx-lg-5 align-items-start">
                     <div class="col-md-6">
                         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                             <div id="crsl" class="carousel-inner">
@@ -49,10 +49,10 @@
                     </div>
 
                     <div class="col-md-6">
-                        <div class="small mb-1"><?=$vendor_code?>: <?=$art?></div>
+                        <div class="small mb-1"><?=$uivcode?>: <?=$art?></div>
                             <h3 class="display-5 fw-bolder"><?=$name?></h3>
                             <div class="fs-5 mb-5">
-                                <span id="price"><?if($ours_price == 0){echo $availability;}else{echo $ours_price.' ₸';}?></span>
+                                <span id="price"><?if($ours_price == 0){echo $uiavail;}else{echo $ours_price.' ₸';}?></span>
                             </div>
                             <?
                               if($linklist != ""){echo $linklist;}
@@ -60,10 +60,10 @@
                             &nbsp
                             <div class="gy-5"><ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                               <li class="nav-item" role="presentation">
-                                <button class="nav-link active btn-sm" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true"><?=$description?></button>
+                                <button class="nav-link active btn-sm" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true"><?=$uidesc?></button>
                               </li>
                               <li class="nav-item" role="presentation">
-                                <button class="nav-link btn-sm" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false"><?=$characteristics?></button>
+                                <button class="nav-link btn-sm" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false"><?=$uichar?></button>
                               </li>
                                 </ul>
                                 <div class="tab-content" id="pills-tabContent">
@@ -97,7 +97,7 @@
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
+        <script src="../js/scripts.js"></script>
         
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-64SW410Z3L"></script>
