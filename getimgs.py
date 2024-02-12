@@ -13,12 +13,13 @@ def main():
         for img in link[0].split(','):
             if img.find('slider_small') == -1:
                 try:
-                    print(img)
-                    #i = requests.get(img)
-                    #name = img.split('/')[-1:][0].replace('*', '_')
-                    #open('imgs/' + name, 'wb').write(i.content)
+                    #print(img)
+                    i = requests.get(img)
+                    name = img.split('/')[-1:][0].replace('*', '_')
+                    open('imgs/' + name, 'wb').write(i.content)
                 except:
                     print('Error!')
+                    continue
 
 def test():
     img = 'https://www.boyard.biz/thumbs/slider_big/nThErcmI3wpDjGNBV9nZLsTvz8WJmLDyh6cbsSnq.jpg'

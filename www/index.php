@@ -1,4 +1,14 @@
 <?php
+
+$routes = [
+    // срабатывает при вызове корня или /index.php
+    '/' => 'hello',
+    // срабатывает при вызове /about или /index.php/about
+    '/about' => 'about',
+    // динамические страницы
+    '/page' => 'page'
+];
+
 // Параметры подключения к базе данных MySQL
 $host = 'mysql-bigvik.alwaysdata.net';
 $user = 'bigvik';
