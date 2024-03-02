@@ -15,18 +15,17 @@ async def fetch(session, url:str)->str:
     async with session.get(url) as response:
         return await response.text()
 
-def get_links(urls:list)->list:
+async def get_links(session, url:str)->list:
     base: str = 'https://artmebel.kz'
     links: list = []
-    for url in urls:
-        soup = bs(fetch(url), 'html.parser')
-        all_links = soup.findAll('div', class_='product-item-title')
-        for link in all_links:
-            a = link.find('a').get('href')
-            links.append(base+a)
+    soup = bs(await fetch(session, url), 'html.parser')
+    all_links = soup.findAll('div', class_='product-item-title')
+    for link in all_links:
+        a = link.find('a').get('href')
+        links.append(base+a)
     return links
 
-def get_data(links:list)->list:
+async def get_data(session, links:list)->list:
     base: str = 'https://artmebel.kz'
     data: list = []
     dic: dict = {}
@@ -34,7 +33,7 @@ def get_data(links:list)->list:
     ln = len(links)
     for link in links:
         print(f'Processing {counter} from {ln} ...', end='\r')
-        parser = HTMLParser(fetch(link))
+        parser = HTMLParser(await fetch(session, link))
         dic.update({'url': link})
         name = parser.css('#pagetitle')[0].text()
         dic.update({'name': name})
@@ -66,10 +65,10 @@ def get_data(links:list)->list:
 
 async def main()->None:
     async with aiohttp.ClientSession() as session:
-        tasks = [asyncio.ensure_future(fetch(session, url)) for url in urls]
+        tasks = [asyncio.ensure_future(get_links(session, url)) for url in urls]
         responses = await asyncio.gather(*tasks)
         for response in responses:
-            print(response)
+            print(await get_data(session, response))
 
 
 if __name__ == '__main__':
