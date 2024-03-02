@@ -6,8 +6,11 @@ $routes = [
     // срабатывает при вызове /about или /index.php/about
     '/about' => 'about',
     // динамические страницы
-    '/page' => 'page'
+    '/page' => 'page',
+    '/all' => 'all'
 ];
+
+$request = $_SERVER['REQUEST_URI'];
 
 // Параметры подключения к базе данных MySQL
 $host = 'mysql-bigvik.alwaysdata.net';
@@ -21,18 +24,47 @@ $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
 if ($lang !== 'kk' && $lang !== 'ru'){$lang = 'ru';}
 include('lang/'.$lang.'.php');
 
-// Get ID from URL
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-if ($id == 0) {
-    header('Location: https://www.boyard.biz', true, 303);
-    exit();
-}
+
 
 // Connecting MySQL
 $mysqli = new mysqli($host, $user, $password, $database);
 // Errors?
 if ($mysqli->connect_error) {
     die('Ошибка подключения (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
+}
+
+if ($request == '/all'){
+    $query = $mysqli->prepare("SELECT id, name, ours_price FROM product_data");
+    $query->execute();
+    $result = $query->get_result();
+    if ($result->num_rows > 0) {
+        $content = '';
+        while ($row = $result->fetch_assoc()) {
+            $content = $content.'<tr>';
+            $content = $content.'<td><a href="index.php/?id='.$row['id'].'">'.$row['id'].'</a></td>';
+            $content = $content.'<td>'.$row['name'].'</td>';
+            $content = $content.'<td>'.$row['ours_price'].' ₸</td>';
+            $content = $content.'</tr>';
+        }
+        include('views/all.php');
+    }
+    exit;
+}
+
+if ($request == '/json'){
+    $query = $mysqli->prepare("SELECT id, name, ours_price FROM product_data");
+    $query->execute();
+    $result = $query->get_result();
+    $rows = mysqli_fetch_all($result);
+    echo json_encode($rows, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// Get ID from URL
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if ($id == 0) {
+    header('Location: https://www.boyard.biz', true, 303);
+    exit();
 }
 
 // Подготовленный запрос к базе данных
@@ -65,12 +97,18 @@ if (in_array(substr($art, 0, 2), $filter)){
         while ($row = $result->fetch_assoc()) {
             // Process each row as needed
             $exp = explode("/", $row['art']);
-            $key = array_key_last($exp);
-            if ($key == 'GRPH'){continue;}
+            $key = end($exp);
+
+            if ($key == 'R' || $key == 'L'){$key = prev($exp)."/".$key;}
+            if ($key == 'GRPH'){
+                $key2 = prev($exp);
+                if ($key2 == 'R' || $key2 == 'L'){$key = prev($exp)."/".$key2."/".$key;}
+                else{$key = prev($exp)."/".$key;}  
+            }
             if ($row['id'] == $id){
-                $temp = '<a class="badge bg-primary" href="index.php?id='.$row['id'].'">'.$exp[$key].'</a>  ';
+                $temp = '<a class="badge bg-primary" href="index.php?id='.$row['id'].'">'.$key.'</a>  ';
             }else{
-                $temp = '<a class="badge bg-light text-dark" href="index.php?id='.$row['id'].'">'.$exp[$key].'</a>  ';
+                $temp = '<a class="badge bg-light text-dark" href="index.php?id='.$row['id'].'">'.$key.'</a>  ';
             }
             
             $linklist .= $temp;
