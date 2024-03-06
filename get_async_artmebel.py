@@ -67,8 +67,10 @@ async def main()->None:
     async with aiohttp.ClientSession() as session:
         tasks = [asyncio.ensure_future(get_links(session, url)) for url in urls]
         responses = await asyncio.gather(*tasks)
-        for response in responses:
-            print(await get_data(session, response))
+        datatasks = [asyncio.ensure_future(get_data(session, response))for response in responses]
+        data = await asyncio.gather(*datatasks)
+        for d in data:
+            print(d)
 
 
 if __name__ == '__main__':
