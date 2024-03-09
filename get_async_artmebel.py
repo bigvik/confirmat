@@ -5,9 +5,12 @@ import asyncio
 import aiohttp
 
 
+ic.disable()
+
 urls: list = [
     'https://artmebel.kz/catalog/811?SHOWALL_1=1',
-    'https://artmebel.kz/catalog/741?SHOWALL_1=1'
+    'https://artmebel.kz/catalog/741?SHOWALL_1=1',
+    'https://artmebel.kz/catalog/954?SHOWALL_1=1'
     ]
 
 
@@ -74,5 +77,5 @@ async def main()->None:
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     loop.run_until_complete(main())
