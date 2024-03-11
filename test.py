@@ -18,13 +18,17 @@ def save_data(data):
     data_saver.close_connection()
 
 async def main():
-    html = await fetch('https://www.boyard.biz/catalog/handles/rt009cp_1_000_500.html')
+    html = await fetch('https://artmebel.kz/catalog/724/82984/')
     parser = HTMLParser(html)
-    imgs = []
-    for img in parser.css('.bd-card-slider__img'):
-        imgs.append(img.attributes['src'].split('/')[-1:][0])
-    print(imgs)
+    #imgs = []
+    #for img in parser.css('.bd-card-slider__img'):
+    #    imgs.append(img.attributes['src'].split('/')[-1:][0])
+    p = ''
+    imgs = parser.css('div[data-value="description"]')[0]
+    for i in imgs.iter():
+        p += i.html
+    print(p)
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     loop.run_until_complete(main())

@@ -206,5 +206,5 @@ async def main():
     #doc.save('catalog.docx')
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     loop.run_until_complete(main())
