@@ -18,16 +18,14 @@ def save_data(data):
     data_saver.close_connection()
 
 async def main():
-    html = await fetch('https://artmebel.kz/catalog/724/82984/')
+    html = await fetch('https://www.boyard.biz/catalog/handles/rs332bap_4_160.html')
     parser = HTMLParser(html)
     #imgs = []
     #for img in parser.css('.bd-card-slider__img'):
     #    imgs.append(img.attributes['src'].split('/')[-1:][0])
     p = ''
-    imgs = parser.css('div[data-value="description"]')[0]
-    for i in imgs.iter():
-        p += i.html
-    print(p)
+    imgs = parser.css('a.bd-s-bread__a')[-1].text()
+    print(imgs)
 
 if __name__ == "__main__":
     loop = asyncio.new_event_loop()

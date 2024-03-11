@@ -87,12 +87,14 @@ async def save_data(data:list):
                             ['id INTEGER PRIMARY KEY',
                              'url TEXT',
                              'name TEXT',
-                             'art TEXT',
+                             'articul TEXT',
+                             'manufacturer TEXT',
+                             'catalog TEXT',
                              'price TEXT',
                              'ours_price TEXT',
                              'imgs TEXT',
-                             'prop TEXT',
-                             'desc TEXT',
+                             'properties TEXT',
+                             'description TEXT',
                              'docs TEXT'
                              ])
     for item in data:
@@ -103,7 +105,7 @@ async def save_data(data:list):
 async def update_data(data:list):
     data_saver = DataSaver('confirmat.db')
     for item in data:
-        data_saver.update_info('product_data', item['url'], item['prop'], item['desc'])
+        data_saver.update_info('product_data', item['url'], item['properties'], item['description'])
     data_saver.close_connection()
 
 async def main():
@@ -136,7 +138,7 @@ async def main():
                 key = li.css(".bd-product-list__prop")[0].text(strip=True)
                 value = li.css(".bd-product-list__value")[0].text(strip=True)
                 prop.update({key: value})
-            page.update({'prop': json.dumps(prop, ensure_ascii=False)})
+            page.update({'properties': json.dumps(prop, ensure_ascii=False)})
             # Description
             p = ''
             try:
@@ -149,7 +151,7 @@ async def main():
             except:
                 p = 'No description'
                 continue
-            page.update({'desc': p})
+            page.update({'description': p})
             # Documents
             docs = []
             for doc in parser.css('.bd-download-files__item'):
@@ -159,7 +161,12 @@ async def main():
             page.update({'url': u[0]})
             page.update({'id': counter})
 
-            page.update({'art': ''})
+            page.update({'articul': ''})
+            page.update({'manufacturer': 'BOYARD'})
+
+            # Catalog
+            cat = parser.css('a.bd-s-bread__a')[-1].text()
+            page.update({'catalog': cat})
             page.update({'ours_price': '0'})
 
             result.append(page)
@@ -168,8 +175,8 @@ async def main():
             print(f'Error!: {counter}/ {u[0]}')
             print(e)
             continue
-    #await save_data(result)
-    await update_data(result)
+    await save_data(result)
+    #await update_data(result)
     #print(result)
 
 

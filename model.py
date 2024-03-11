@@ -12,7 +12,7 @@ class DataSaver:
     def insert_data(self, table_name, data):
         #placeholders = ', '.join(['?' for _ in data])
         #print(placeholders)
-        query = f"INSERT INTO {table_name} VALUES (:id, :url, :name, :art, :price, :ours_price, :imgs, :prop, :desc, :docs)"
+        query = f"INSERT INTO {table_name} VALUES (:id, :url, :name, :articul, :manufacturer, :catalog, :price, :ours_price, :imgs, :properties, :description, :docs)"
         #query = f"INSERT INTO {table_name} VALUES ({placeholders})"
         #print(query)
         self.cursor.execute(query, data)

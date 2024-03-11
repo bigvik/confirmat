@@ -9,9 +9,17 @@ import csv
 #ic.disable()
 
 urls: list = [
-    'https://artmebel.kz/catalog/811?SHOWALL_1=1',
-    'https://artmebel.kz/catalog/741?SHOWALL_1=1'#,
-    #'https://artmebel.kz/catalog/954?SHOWALL_1=1'
+    'https://artmebel.kz/catalog/781?SHOWALL_1=1', # Ножки
+    'https://artmebel.kz/catalog/953?SHOWALL_1=1', # Колеса
+    'https://artmebel.kz/catalog/954?SHOWALL_1=1', # Подпятники
+    'https://artmebel.kz/catalog/711', # Шпингалеты
+    'https://artmebel.kz/catalog/710', # Демпфера, магниты, доводчики
+    'https://artmebel.kz/catalog/755?SHOWALL_1=1', # Газлифты
+    'https://artmebel.kz/catalog/970?SHOWALL_1=1', # Шурупы
+    'https://artmebel.kz/catalog/811?SHOWALL_1=1', # Штанги
+    'https://artmebel.kz/catalog/741?SHOWALL_1=1', # Уголки
+    'https://artmebel.kz/catalog/747?SHOWALL_1=1', # Полкодержатели
+    
     ]
 
 
@@ -48,7 +56,7 @@ async def get_data(session, links:list)->list:
         except:
             dic.update({'Categories (x,y,z...)': ''})
         price = parser.css('.product-item-detail-price-current')[0].text()
-        dic.update({'Price tax excluded': price.strip()[:-6].replace(' ', '')})
+        dic.update({'Price tax excluded': price.strip()[:-6].replace(u'\xa0', '')})
         img = parser.css('.product-item-detail-slider-image img')[0].attributes['src']
         dic.update({'Image URLs (x,y,z...)': base+img})
         desc = parser.css('div[data-value="description"]')[0]
@@ -73,7 +81,7 @@ async def get_data(session, links:list)->list:
                 if prop[0] == 'Производитель':
                     dic.update({'Manufacturer': prop[1]})
                 prop = []
-        #dic.update({'prop':prop_dic})
+        dic.update({'Quantity':100})
         ic(dic)
         data.append(dic)
 

@@ -36,7 +36,7 @@ def main():
     db.close()
 
     print('Done! Pricelist added to database')
-    addprice_to_product()
+    #addprice_to_product()
 
 
 if __name__ == "__main__":
