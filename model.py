@@ -12,7 +12,7 @@ class DataSaver:
     def insert_data(self, table_name, data):
         #placeholders = ', '.join(['?' for _ in data])
         #print(placeholders)
-        query = f"INSERT INTO {table_name} VALUES (:id, :url, :name, :articul, :manufacturer, :catalog, :price, :ours_price, :imgs, :properties, :description, :docs)"
+        query = f"INSERT OR IGNORE INTO {table_name} (url, name, articul, manufacturer, catalog, price, ours_price, imgs, properties, description, docs) VALUES (:url, :name, :articul, :manufacturer, :catalog, :price, :ours_price, :imgs, :properties, :description, :docs)"
         #query = f"INSERT INTO {table_name} VALUES ({placeholders})"
         #print(query)
         self.cursor.execute(query, data)
@@ -24,7 +24,7 @@ class DataSaver:
         self.conn.commit()
 
     def insert_links(self, table_name, data):
-        query = f"INSERT INTO {table_name} VALUES (?)"
+        query = f"INSERT OR IGNORE INTO {table_name} VALUES (?)"
         print(data)
         self.cursor.execute(query, data)
         self.conn.commit()

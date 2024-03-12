@@ -18,7 +18,7 @@ async def parse_links(section:str) -> dict:
     html = await fetch(section)
     parser = HTMLParser(html)
     process_links = [section]
-    pages = parser.css('.bd-pagination')
+    pages = parser.css('.bd-pagination__container')
     if pages: 
         pages_num = pages[0].css('.bd-pagination__item')[-1:][0].text(strip=True)
         print(f'\tCatalog {section} has {int(pages_num)} pages')
@@ -43,7 +43,7 @@ async def process_parse_links(links:list) -> list:
 
 async def save_data(data):
     data_saver = DataSaver('confirmat.db')
-    data_saver.create_table('product_links', ['url TEXT'])
+    data_saver.create_table('product_links', ['url TEXT UNIQUE'])
     for item in data:
         data_saver.insert_links('product_links', tuple([item]))
     print('Data saved successfully!')

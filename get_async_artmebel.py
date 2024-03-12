@@ -18,8 +18,7 @@ urls: list = [
     'https://artmebel.kz/catalog/970?SHOWALL_1=1', # Шурупы
     'https://artmebel.kz/catalog/811?SHOWALL_1=1', # Штанги
     'https://artmebel.kz/catalog/741?SHOWALL_1=1', # Уголки
-    'https://artmebel.kz/catalog/747?SHOWALL_1=1', # Полкодержатели
-    
+    'https://artmebel.kz/catalog/747?SHOWALL_1=1' # Полкодержатели
     ]
 
 
@@ -53,7 +52,7 @@ async def get_data(session, links:list)->list:
         try:
             catalog = parser.css('.bx-breadcrumb div:nth-last-child(2) span')[0].text()
             dic.update({'Categories (x,y,z...)': catalog})
-        except:
+        except Exception:
             dic.update({'Categories (x,y,z...)': ''})
         price = parser.css('.product-item-detail-price-current')[0].text()
         dic.update({'Price tax excluded': price.strip()[:-6].replace(u'\xa0', '')})

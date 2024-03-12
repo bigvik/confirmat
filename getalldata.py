@@ -148,7 +148,7 @@ async def main():
                 for cnode in node.iter():
                     p += cnode.html
                     ##desc = parser.css('.bd-card-tabs__body')[1].text(strip=True)
-            except:
+            except Exception:
                 p = 'No description'
                 continue
             page.update({'description': p})
