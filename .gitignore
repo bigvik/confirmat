@@ -7,5 +7,6 @@ qr/*
 *.db
 test.py
 *.sql
+*.csv
 ~
 ~/*

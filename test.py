@@ -36,7 +36,7 @@ async def main():
     #     for i in range(2,int(pages_num)+1):
     #         process_links.append(section+'?page='+str(i))
 
-    print(process_links)
+    print(parser)
 
 if __name__ == "__main__":
     loop = asyncio.new_event_loop()

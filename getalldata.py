@@ -85,7 +85,7 @@ async def save_data(data:list):
     data_saver = DataSaver('confirmat.db')
     data_saver.create_table('product_data',
                             ['id INTEGER PRIMARY KEY',
-                             'url TEXT',
+                             'url TEXT UNIQUE',
                              'name TEXT',
                              'articul TEXT',
                              'manufacturer TEXT',

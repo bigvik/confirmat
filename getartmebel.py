@@ -10,7 +10,7 @@ import json
 
 #ic.disable()
 
-urls: list = [
+urls_old: list = [
     'https://artmebel.kz/catalog/781?SHOWALL_1=1', # Ножки
     'https://artmebel.kz/catalog/953?SHOWALL_1=1', # Колеса
     'https://artmebel.kz/catalog/954?SHOWALL_1=1', # Подпятники
@@ -21,12 +21,27 @@ urls: list = [
     'https://artmebel.kz/catalog/811?SHOWALL_1=1', # Штанги
     'https://artmebel.kz/catalog/741?SHOWALL_1=1', # Уголки
     'https://artmebel.kz/catalog/747?SHOWALL_1=1' # Полкодержатели
-    ]
 
+    'https://artmebel.kz/catalog/983?SHOWALL_1=1' # Заглушки
+    'https://artmebel.kz/catalog/984',
+    'https://artmebel.kz/catalog/985',
+    'https://artmebel.kz/catalog/982'
+    ]
+urls: list = []
 
 async def fetch(session, url:str)->str:
     async with session.get(url) as response:
         return await response.text()
+    
+async def get_catalog(session, url:str, links, counter)->list:
+    base: str = 'https://artmebel.kz'
+    parser = HTMLParser(await fetch(session, url))
+    for link in parser.css('.bx_catalog_tile_img'):
+        a = link.attributes['href']
+        href = base+a
+        if href not in links:
+            links.append(href+'?SHOWALL_1=1')
+            await get_catalog(session, href, links, counter+1)
 
 async def get_links(session, url:str)->list:
     base: str = 'https://artmebel.kz'
@@ -126,7 +141,7 @@ async def save_data(data:list):
     data_saver = ds('confirmat.db')
     data_saver.create_table('product_data',
                             ['id INTEGER PRIMARY KEY',
-                             'url TEXT',
+                             'url TEXT UNIQUE',
                              'name TEXT',
                              'articul TEXT',
                              'manufacturer TEXT',
@@ -155,6 +170,9 @@ async def main()->None:
             data = pickle.load(f)
     else:
         async with aiohttp.ClientSession() as session:
+            await get_catalog(session, 'https://artmebel.kz/catalog/', urls, 1)
+            print(f'Links quantity: {len(urls)}')
+
             tasks = [asyncio.ensure_future(get_links(session, url)) for url in urls]
             responses = await asyncio.gather(*tasks)
 
