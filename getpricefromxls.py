@@ -22,6 +22,27 @@ def addprice_to_product():
     db.close()
     print(f'Done! Updated {counter} rows in table')
 
+def load_pricelist():
+    data = pd.read_excel('pricelist.xls', names=['sku', 'name', 'wholesale_price','retail_price', 'quantity', 'availability'])
+    data['sku'] = data['sku'].astype('string')
+    data['name'] = data['name'].astype('string')
+    data['availability'] = data['availability'].astype('string')
+    data['wholesale_price'] = data['wholesale_price'].astype('float32')
+    data['retail_price'] = data['retail_price'].astype('float32')
+    data['quantity'] = data['quantity'].astype('float32')
+
+
+    data['sku'] = data['sku'].apply(lambda x: str(x).strip())
+    data['name'] = data['name'].apply(lambda x: str(x).strip())
+    data['availability'] = data['availability'].apply(lambda x: str(x).strip())
+
+    db = sqlite3.connect('confirmat.db')
+    data.to_sql('pricelist', db, if_exists='replace', index=False)
+    db.close()
+
+    print('Done! Pricelist added to database')
+
+
 def main():
     data = pd.read_excel('pricelist.xls', usecols=[0, 5, 13, 14], names=['art', 'name', 'opt','price'], skiprows=6)
     f = ['В', 'Арт', 'АРТ', 'Метиз Астана', 'МетизАстана', 'КонфАлм', 'Дима', 'МФ', 'NaN', 'B', 'АлК',
@@ -41,4 +62,4 @@ def main():
 
 if __name__ == "__main__":
     #addprice_to_product()
-    main()
+    load_pricelist()
