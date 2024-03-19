@@ -12,7 +12,7 @@ class DataSaver:
     def insert_data(self, table_name, data):
         #placeholders = ', '.join(['?' for _ in data])
         #print(placeholders)
-        query = f"INSERT OR IGNORE INTO {table_name} (url, name, articul, manufacturer, catalog, price, ours_price, imgs, properties, description, docs) VALUES (:url, :name, :articul, :manufacturer, :catalog, :price, :ours_price, :imgs, :properties, :description, :docs)"
+        query = f"INSERT OR IGNORE INTO {table_name} (url, name, sku, manufacturer, catalog, price, ours_price, imgs, properties, description, docs) VALUES (:url, :name, :sku, :manufacturer, :catalog, :price, :ours_price, :imgs, :properties, :description, :docs)"
         #query = f"INSERT INTO {table_name} VALUES ({placeholders})"
         #print(query)
         self.cursor.execute(query, data)
@@ -45,7 +45,7 @@ class DataSaver:
         return self.cursor.fetchall()
     
     def get_where(self, art):
-        query = f"SELECT url, art FROM 'product_data' WHERE art LIKE '%{art}%'"
+        query = f"SELECT url, sku FROM 'product_data' WHERE sku LIKE '%{art}%'"
         self.cursor.execute(query)
         return self.cursor.fetchall()
 

@@ -87,7 +87,7 @@ async def save_data(data:list):
                             ['id INTEGER PRIMARY KEY',
                              'url TEXT UNIQUE',
                              'name TEXT',
-                             'articul TEXT',
+                             'sku TEXT',
                              'manufacturer TEXT',
                              'catalog TEXT',
                              'price TEXT',
@@ -161,7 +161,7 @@ async def main():
             page.update({'url': u[0]})
             page.update({'id': counter})
 
-            page.update({'articul': ''})
+            page.update({'sku': ''})
             page.update({'manufacturer': 'BOYARD'})
 
             # Catalog

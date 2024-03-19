@@ -10,23 +10,6 @@ import json
 
 #ic.disable()
 
-urls_old: list = [
-    'https://artmebel.kz/catalog/781?SHOWALL_1=1', # Ножки
-    'https://artmebel.kz/catalog/953?SHOWALL_1=1', # Колеса
-    'https://artmebel.kz/catalog/954?SHOWALL_1=1', # Подпятники
-    'https://artmebel.kz/catalog/711', # Шпингалеты
-    'https://artmebel.kz/catalog/710', # Демпфера, магниты, доводчики
-    'https://artmebel.kz/catalog/755?SHOWALL_1=1', # Газлифты
-    'https://artmebel.kz/catalog/970?SHOWALL_1=1', # Шурупы
-    'https://artmebel.kz/catalog/811?SHOWALL_1=1', # Штанги
-    'https://artmebel.kz/catalog/741?SHOWALL_1=1', # Уголки
-    'https://artmebel.kz/catalog/747?SHOWALL_1=1' # Полкодержатели
-
-    'https://artmebel.kz/catalog/983?SHOWALL_1=1' # Заглушки
-    'https://artmebel.kz/catalog/984',
-    'https://artmebel.kz/catalog/985',
-    'https://artmebel.kz/catalog/982'
-    ]
 urls: list = []
 
 async def fetch(session, url:str)->str:
@@ -97,7 +80,7 @@ async def get_data(session, links:list)->list:
 
         # Articul & Manufacturer
         dic.update({'manufacturer': ''})
-        dic.update({'articul': ''})
+        dic.update({'sku': ''})
 
         # Properties
         prop = []
@@ -121,12 +104,19 @@ async def get_data(session, links:list)->list:
 
                     # Articul
                     if prop[0] == 'Артикул':
-                        dic.update({'articul': prop[1]})
+                        dic.update({'sku': prop[1]})
                         
                     prop = []
         except Exception:
             pass
         dic.update({'properties': json.dumps(prop_dic, ensure_ascii=False)})
+
+        # Components
+        try:
+            for a in parser.css('.samecomp a'):
+                links.append(base+a.attributes['href'])
+        except Exception:
+            pass
 
         dic.update({'docs': ''})
         dic.update({'ours_price': '0'})
@@ -143,7 +133,7 @@ async def save_data(data:list):
                             ['id INTEGER PRIMARY KEY',
                              'url TEXT UNIQUE',
                              'name TEXT',
-                             'articul TEXT',
+                             'sku TEXT',
                              'manufacturer TEXT',
                              'catalog TEXT',
                              'price TEXT',
@@ -186,6 +176,7 @@ async def main()->None:
         os.remove('data.pickle')
     except Exception:
         print('FAIL')
+        os.remove('data.pickle')
 
                 
 

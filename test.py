@@ -18,7 +18,7 @@ def save_data(data):
     data_saver.close_connection()
 
 async def main():
-    section = 'https://www.boyard.biz/catalog/kitchen'
+    section = 'https://artmebel.kz/catalog/781/73390/?sphrase_id=92087'
     html = await fetch(section)
     parser = HTMLParser(html)
     #imgs = []
@@ -35,8 +35,14 @@ async def main():
     #     print(f'\tCatalog {section} has {int(pages_num)} pages')
     #     for i in range(2,int(pages_num)+1):
     #         process_links.append(section+'?page='+str(i))
+    links = []
+    try:
+        for a in parser.css('.samecomp a'):
+                links.append(a.attributes['href'])
+    except Exception:
+        pass
 
-    print(parser)
+    print(links)
 
 if __name__ == "__main__":
     loop = asyncio.new_event_loop()
