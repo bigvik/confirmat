@@ -4,6 +4,8 @@ qr/*
 *.pdf
 *.docx
 *.xls
+*.xlsx
+*.pickle
 *.db
 test.py
 *.sql
