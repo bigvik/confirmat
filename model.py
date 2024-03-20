@@ -38,6 +38,17 @@ class DataSaver:
         query = "SELECT url FROM 'product_links'"
         self.cursor.execute(query)
         return self.cursor.fetchall()
+    
+    def url_exist(self, url):
+        query = "SELECT name FROM product_data WHERE url == ?"
+        self.cursor.execute(query, (url,))
+        if self.cursor.fetchone(): return True
+        else: return False
+
+    def name(self, url):
+        query = "SELECT name FROM product_data WHERE url == ?"
+        self.cursor.execute(query, (url,))
+        return self.cursor.fetchone()
 
     def get_urls_product(self):
         query = "SELECT url, name FROM 'product_data'"

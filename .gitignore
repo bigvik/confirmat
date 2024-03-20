@@ -10,5 +10,6 @@ qr/*
 test.py
 *.sql
 *.csv
+*.log
 ~
 ~/*

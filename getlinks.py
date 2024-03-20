@@ -27,6 +27,7 @@ async def parse_links(section:str) -> dict:
     else:
         print(f'\tCatalog {section} has 1 page')
     links = await process_parse_links(process_links)
+    print(f'\tCatalog {section} has {len(links)} products')
     return links
 
 async def process_parse_links(links:list) -> list:

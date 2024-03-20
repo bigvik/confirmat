@@ -111,70 +111,75 @@ async def update_data(data:list):
 async def main():
     #urls = ['https://www.boyard.biz/catalog/handles/rt009cp_1_000_500.html', 'https://www.boyard.biz/catalog/handles/rs156bl_3_320.html']
     urls = await get_urls()
+    db = DataSaver('confirmat.db')
     result = []
     counter = 1
     length = len(urls)
     for u in urls:
-        try:
-            print(f'\t\tProcessing {counter}/{length} url: {u[0]}', end='\r')
-            html = await fetch(u[0])
-            parser = HTMLParser(html)
-            page = {}
-            # Name
-            name = parser.css('.bd-card-head__title')[0].text()
-            page.update({'name': name})
-             # Price
-            price = parser.css('li.bd-price__current')[1].text(strip=True)[:-4].replace(' ', '')
-            page.update({'price': price})
-            # Images
-            imgs = []
-            for img in parser.css('.bd-card-slider__img'):
-                imgs.append(img.attributes['src'])
-            page.update({'imgs': ', '.join(imgs)})
-            # Properties
-            prop = {}
-            #for li in parser.css('.bd-product-list__item'):
-            for li in parser.css('li[data-tab-action="feature"] div ul li'):
-                key = li.css(".bd-product-list__prop")[0].text(strip=True)
-                value = li.css(".bd-product-list__value")[0].text(strip=True)
-                prop.update({key: value})
-            page.update({'properties': json.dumps(prop, ensure_ascii=False)})
-            # Description
-            p = ''
+        if not db.url_exist(u[0]):
+
             try:
-                #node = parser.css('.bd-card-tabs__body')[1]
-                node = parser.css('li[data-tab-action="description"]')[0]
-                #p = node.html
-                for cnode in node.iter():
-                    p += cnode.html
-                    ##desc = parser.css('.bd-card-tabs__body')[1].text(strip=True)
-            except Exception:
-                p = 'No description'
+
+                print(f'\t\tProcessing {counter}/{length} url: {u[0]}', end='\r')
+                html = await fetch(u[0])
+                parser = HTMLParser(html)
+                page = {}
+                # Name
+                name = parser.css('.bd-card-head__title')[0].text()
+                page.update({'name': name})
+                # Price
+                price = parser.css('li.bd-price__current')[1].text(strip=True)[:-4].replace(' ', '')
+                page.update({'price': price})
+                # Images
+                imgs = []
+                for img in parser.css('.bd-card-slider__img'):
+                    imgs.append(img.attributes['src'])
+                page.update({'imgs': ', '.join(imgs)})
+                # Properties
+                prop = {}
+                #for li in parser.css('.bd-product-list__item'):
+                for li in parser.css('li[data-tab-action="feature"] div ul li'):
+                    key = li.css(".bd-product-list__prop")[0].text(strip=True)
+                    value = li.css(".bd-product-list__value")[0].text(strip=True)
+                    prop.update({key: value})
+                page.update({'properties': json.dumps(prop, ensure_ascii=False)})
+                # Description
+                p = ''
+                try:
+                    #node = parser.css('.bd-card-tabs__body')[1]
+                    node = parser.css('li[data-tab-action="description"]')[0]
+                    #p = node.html
+                    for cnode in node.iter():
+                        p += cnode.html
+                        ##desc = parser.css('.bd-card-tabs__body')[1].text(strip=True)
+                except Exception:
+                    p = 'No description'
+                    #continue
+                page.update({'description': p})
+                # Documents
+                docs = []
+                for doc in parser.css('.bd-download-files__item'):
+                    docs.append(doc.attributes['href'])
+                page.update({'docs': ', '.join(docs)})
+
+                page.update({'url': u[0]})
+                page.update({'id': counter})
+
+                page.update({'sku': ''})
+                page.update({'manufacturer': 'BOYARD'})
+
+                # Catalog
+                cat = parser.css('a.bd-s-bread__a')[-1].text()
+                page.update({'catalog': cat})
+                page.update({'ours_price': '0'})
+
+                result.append(page)
+                
+            except Exception as e:
+                print(f'Error!: {counter}/ {u[0]}')
+                print(e)
                 continue
-            page.update({'description': p})
-            # Documents
-            docs = []
-            for doc in parser.css('.bd-download-files__item'):
-                docs.append(doc.attributes['href'])
-            page.update({'docs': ', '.join(docs)})
-            
-            page.update({'url': u[0]})
-            page.update({'id': counter})
-
-            page.update({'sku': ''})
-            page.update({'manufacturer': 'BOYARD'})
-
-            # Catalog
-            cat = parser.css('a.bd-s-bread__a')[-1].text()
-            page.update({'catalog': cat})
-            page.update({'ours_price': '0'})
-
-            result.append(page)
-            counter += 1
-        except Exception as e:
-            print(f'Error!: {counter}/ {u[0]}')
-            print(e)
-            continue
+        counter += 1
     await save_data(result)
     #await update_data(result)
     #print(result)
