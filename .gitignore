@@ -11,5 +11,6 @@ test.py
 *.sql
 *.csv
 *.log
+*.xml
 ~
 ~/*

@@ -4,6 +4,11 @@ import sqlite3
 
 def main():
     price_in = pd.read_excel('pricetest.xls', names=['sku','name','wholesale','retail'])
+    price_in['sku'] = price_in['sku'].apply(lambda x: str(x).strip())
+    price_in['name'] = price_in['name'].apply(lambda x: str(x).strip())
+    price_in['name'] = price_in['name'].apply(lambda x: x.replace(', Шт', ''))
+    price_in['name'] = price_in['name'].apply(lambda x: x.replace(', лист', ''))
+    price_in['name'] = price_in['name'].apply(lambda x: x.replace(', компл', ''))
     cnx = sqlite3.connect('confirmat.db')
     #data = pd.read_sql_query("SELECT * FROM pricelist", cnx)
     names = []
